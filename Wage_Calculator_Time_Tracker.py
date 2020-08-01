@@ -4,8 +4,8 @@ import shutil
 # Storing Console's Width
 var = shutil.get_terminal_size().columns
 # Introduction
-print("WELCOME TO PAYROLL CALCULATOR".center(var))
-print("This program will calculate you pay from the hours worked".center(var))
+print("WELCOME TO WAGE CALCULATOR".center(var))
+print("This program will calculate your wage from the hours you have worked".center(var))
 print("The amount will be stored in the payroll.csv along with start date, stop date and hours worked".center(var))
 
 
