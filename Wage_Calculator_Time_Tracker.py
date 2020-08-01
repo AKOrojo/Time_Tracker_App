@@ -66,7 +66,7 @@ def save_to_csv():
                     'wage $': [wage_earn]}
     dataset = pd.DataFrame(tracker_data, columns=['client', 'project title', 'work hours', 'wage $'])
     # print(dataset)
-    dataset.to_csv('time_tracking.csv', sep='\t', header=None, mode='a')
+    dataset.to_csv('payroll.csv', sep='\t', header=None, mode='a')
     return dataset
 
 
