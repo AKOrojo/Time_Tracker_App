@@ -5,15 +5,15 @@ when they enter their start date and time of the project.
 
 #Table of Contents
 
--[Description]-(#description)
+-[Description]-(#Description)
 
 -[Libraries]-(#Libraries)
 
--[Features]-(#features)
+-[Features]-(#Features)
 
--[Usage]-(#usage)
+-[Usage]-(#Usage)
 
--[Contributor]-(#contributors)
+-[Contributor]-(#Contributors)
 
 ## Description
 * The program is created to accept input from users
@@ -31,8 +31,13 @@ when they enter their start date and time of the project.
 * import shutil
 
 ## Features
-* Console appilaction
+* Console application
 * Python 3 codes
 
 ## Usage
-* preferred ide anaconda/jupyter Notebook
+* Preferred IDLE, anaconda/jupyter Notebook
+
+## Contributors
+* Abanisenioluwa Orojo
+* Abigail Baidoo
+* Abubakar Passum Abdul Gaffar
