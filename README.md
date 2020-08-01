@@ -4,15 +4,16 @@ This is a program to calculate the wages of a user
 when they enter their start date and time of the project.
 
 #Table of Contents
+
 -[Description]-(#description)
 
 -[Libraries]-(#Libraries)
 
 -[Features]-(#features)
 
--[usage]-(#usage)
+-[Usage]-(#usage)
 
--[contributor]-(#contributors)
+-[Contributor]-(#contributors)
 
 ## Description
 * The program is created to accept input from users
