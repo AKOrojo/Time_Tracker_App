@@ -3,7 +3,7 @@
 This is a program to calculate the wages of a user
 when they enter their start date and time of the project.
 
-#Table of Contents
+# Table of Contents
 
 -[Description]-(#Description)
 
