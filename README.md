@@ -5,15 +5,15 @@ when they enter their start date and time of the project.
 
 # Table of Contents
 
--[Description]-(#Description)
+-[Description]-(# Description)
 
--[Libraries]-(#Libraries)
+-[Libraries]-(# Libraries)
 
--[Features]-(#Features)
+-[Features]-(# Features)
 
--[Usage]-(#Usage)
+-[Usage]-(# Usage)
 
--[Contributor]-(#Contributors)
+-[Contributor]-(# Contributors)
 
 ## Description
 * The program is created to accept input from users
@@ -35,7 +35,7 @@ when they enter their start date and time of the project.
 * Python 3 codes
 
 ## Usage
-* Preferred IDLE, anaconda/jupyter Notebook
+* Preferred IDLE shell, anaconda/jupyter Notebook
 
 ## Contributors
 * Abanisenioluwa Orojo
