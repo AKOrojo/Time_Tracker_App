@@ -44,9 +44,9 @@ def calculate_wages():
 
 # Display Wages
 wage_earn=calculate_wages()
-print(f'you have worked for {work_hours} hours and wages earn is ${wage_earn}')
+print(f'You have worked for {work_hours} hours and wages earned is ${wage_earn}')
 
-# Writing to CSV File and also display the tracker data
+# Writing to CSV File and also displaying the tracker data
 def save_to_csv():
     import pandas as pd
     tracker_data = {'client':[client_name],
