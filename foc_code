@@ -16,7 +16,7 @@ import re
 plt.style.use('ggplot')
 
 
-# # Loading Csv File
+# # Loading csv File
 #    
 #    - Using pandas to read the flavors_of_cacao file 
 #    - checking the shape of the dataframe
@@ -28,7 +28,7 @@ foc = pd.read_csv('flavors_of_cacao.csv')
 foc.shape 
 
 
-# ## using head function to display our datasets
+# ## Displaying our dataset
 
 # In[75]:
 
@@ -36,7 +36,7 @@ foc.shape
 foc.head()
 
 
-# ## Summary Stats of the datasets
+# ## Summary Statistics of the Dataset
 #     - the describe function helps give the summary stats of the dataset
 #     - the std,mean,min,max,percentile values
 
@@ -54,7 +54,7 @@ foc.describe(include='all').T
 foc.dtypes
 
 
-# ## Revising of the columns Names 
+# ## Refining column names 
 
 # In[78]:
 
@@ -72,7 +72,7 @@ foc.rename (columns={ foc.columns[0] : 'company',
 foc
 
 
-# ## displaying the uniques locations
+# ## Displaying the unique locations
 
 # In[79]:
 
@@ -80,7 +80,7 @@ foc
 foc['company_location'].sort_values().unique()
 
 
-# # Correcting Naming Mistakes
+# # Correcting Naming Mistakes in Company Location
 
 # In[80]:
 
@@ -90,7 +90,7 @@ foc['company_location'] = foc['company_location'].str.replace('Amsterdam', 'Holl
 foc['company_location'].sort_values().unique()
 
 
-# # Convert cocoa_Percent to numerical values
+# # Converting cocoa_percent values to decimal values
 
 # In[81]:
 
@@ -104,7 +104,7 @@ foc["cocoa_percent"] = foc["cocoa_percent"].str.replace("%","").astype(float)/10
 foc
 
 
-# # Correcting Naming Mistakes
+# # Correcting Naming Mistakes in Baen Origin
 
 # In[83]:
 
@@ -195,7 +195,91 @@ foc.head()
 foc.isnull().sum()
 
 
-# # Data Visual
+# # Data Visualization
+
+# In[91]:
+
+
+country=list(foc['company_location'].value_counts().head(10).index)
+choco_bars=list(foc['company_location'].value_counts().head(10))
+prod_ctry=dict(zip(country,choco_bars))
+print(foc['company_location'].value_counts().head())
+
+plt.figure(figsize=(10,5))
+plt.hlines(y=country,xmin=0,xmax=choco_bars,color='red')
+plt.plot(choco_bars,country,"r^")
+plt.xlabel('Number of Companies')
+plt.ylabel('Country')
+plt.title("Top 10 Countries with High Number of Companies")
+plt.show()
+
+
+
+# In[91]:
+
+
+a1 = foc.groupby('company_location').aggregate({'cocoa_percent':'mean'})
+a1 = a1.sort_values('cocoa_percent', ascending = False).head(10)
+a1 = a1.reset_index()
+
+sns.set()
+plt.figure(figsize=(15, 4))
+sns.barplot(x=a1.company_location, y=a1.cocoa_percent)
+plt.xticks(rotation=90)
+plt.xlabel("Chocolate Company Location")
+plt.ylabel("Average Cocoa Percentage")
+plt.title("Top 10 Countries and Average Cocoa Percentage Used")
+plt.show()
+
+# In[92]:
+
+d5 = foc.groupby('company_location').aggregate({'rating':'mean'})
+d5 = d5.sort_values('rating', ascending = False).head(10)
+d5 = d5.reset_index()
+
+sns.set()
+plt.figure(figsize=(15, 4))
+sns.barplot(x=d5.company_location, y=d5.rating)
+plt.xticks(rotation=90)
+plt.xlabel("Company Location Name")
+plt.ylabel("Rating")
+plt.title("Top 10 Companies By Average Rating")
+plt.show()
+
+# In[93]:
+
+
+d6 = foc.groupby('review_year').aggregate({'cocoa_percent':'mean'})
+d6 = d6.reset_index()
+sns.set()
+plt.figure(figsize=(15, 4))
+ax = sns.lineplot(x='review_year', y='cocoa_percent', data=d6)
+ax.set(xticks=d6.review_year.values)
+plt.xlabel("\nYear of Review")
+plt.ylabel("Cocoa Percentage ")
+plt.title("Cocoa Percentage Patterns Per Year \n")
+plt.show()
+
+# In[97]:
+
+d7 = foc.groupby('review_year').aggregate({'rating':'mean'})
+d7 = d7.reset_index()
+sns.set()
+plt.figure(figsize=(15, 4))
+ax = sns.lineplot(x='review_year', y='rating', data=d7)
+ax.set(xticks=d7.review_year.values)
+plt.xlabel("\nYear of Review")
+plt.ylabel("Rating Percentage")
+plt.title("Average Rating Percentage Per Year  \n")
+plt.show()
+
+# In[96]:
+
+plt.figure(figsize=(20,10))
+sns.countplot(foc.rating)
+plt.xlabel('Rating')
+plt.ylabel('Frequency')
+plt.title("Rating Frequencies");
 
 # In[91]:
 
