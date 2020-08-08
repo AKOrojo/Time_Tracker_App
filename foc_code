@@ -1,0 +1,401 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# # Importing Libraries
+
+# In[73]:
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib
+get_ipython().run_line_magic('matplotlib', 'inline')
+import seaborn as sns
+import re
+plt.style.use('ggplot')
+
+
+# # Loading Csv File
+#    
+#    - Using pandas to read the flavors_of_cacao file 
+#    - checking the shape of the dataframe
+
+# In[74]:
+
+
+foc = pd.read_csv('flavors_of_cacao.csv')
+foc.shape 
+
+
+# ## using head function to display our datasets
+
+# In[75]:
+
+
+foc.head()
+
+
+# ## Summary Stats of the datasets
+#     - the describe function helps give the summary stats of the dataset
+#     - the std,mean,min,max,percentile values
+
+#  foc.describe(include='all')
+
+# In[76]:
+
+
+foc.describe(include='all').T
+
+
+# In[77]:
+
+
+foc.dtypes
+
+
+# ## Revising of the columns Names 
+
+# In[78]:
+
+
+foc.rename (columns={ foc.columns[0] : 'company',
+    'Specific Bean Origin\nor Bar Name': 'bar_origin',
+    'REF': 'REF',
+    'Review\nDate': 'review_year',
+    'Cocoa\nPercent': 'cocoa_percent',
+    'Company\nLocation': 'company_location',
+    'Rating': 'rating',
+    'Bean\nType': 'bean_type',
+    'Broad Bean\nOrigin': 'bean_origin'
+}, inplace=True)
+foc
+
+
+# ## displaying the uniques locations
+
+# In[79]:
+
+
+foc['company_location'].sort_values().unique()
+
+
+# # Correcting Naming Mistakes
+
+# In[80]:
+
+
+foc['company_location'] = foc['company_location'].str.replace('Amsterdam', 'Holland').str.replace('U.K.', 'England').str.replace('Niacragua', 'Nicaragua').str.replace('Domincan Republic', 'Dominican Republic')
+
+foc['company_location'].sort_values().unique()
+
+
+# # Convert cocoa_Percent to numerical values
+
+# In[81]:
+
+
+foc["cocoa_percent"] = foc["cocoa_percent"].str.replace("%","").astype(float)/100
+
+
+# In[82]:
+
+
+foc
+
+
+# # Correcting Naming Mistakes
+
+# In[83]:
+
+
+foc['bean_origin'].sort_values().unique()
+
+
+# In[84]:
+
+
+def txt_prep(text):
+    replacements = [
+        ['Ven,|Ven$|Venez,|Venez$', 'Venezuela, '],
+        ['-', ', '], 
+        ['/ ', ', '], 
+        ['/', ', '], 
+        ['\(', ', '], 
+        [' and', ', '], 
+        ['Dom Rep|DR|Domin Rep|Dominican Rep,|Domincan Republic', 'Dominican Republic'],
+        ['Mad,|Mad$', 'Madagascar, '],
+        [',\s+', ','],
+        ['PNG', 'Papua New Guinea, '],
+        [' &', ', '], 
+        ['\)', ''],
+        ['Guat,|Guat$', 'Guatemala, '],
+        ['Haw,|Haw$', 'Hawaii, '],
+        ['Ecu,|Ecu$|Ecuad,|Ecuad$', 'Ecuador, '],
+         [' Bali', ',Bali'],
+        ['Nic,|Nic$', 'Nicaragua, '],
+        ['Cost Rica', 'Costa Rica'],
+        ['Mex,|Mex$', 'Mexico, '],
+        ['Jam,|Jam$', 'Jamaica, '],
+        [', ,', ', '], 
+        ['\xa0', ' '],
+        ['Gre,|Gre$', 'Grenada, '],
+        ['Tri,|Tri$', 'Trinidad, '],
+        ['C Am', 'Central America'],
+        ['S America', 'South America'],
+        [', $', ''], 
+        [',  ', ', ']
+       
+    ]
+    for i, j in replacements:
+        text = re.sub(i, j, str(text))
+    return text
+
+
+# In[85]:
+
+
+foc['bean_origin'].str.replace('.', '').apply(txt_prep).unique()
+
+
+# In[86]:
+
+
+foc['bean_origin'] = foc['bean_origin'].str.replace('.', '').apply(txt_prep)
+
+
+# # Check and Changing Empty Cells to None
+
+# In[87]:
+
+
+foc.isnull().any()
+
+
+# In[88]:
+
+
+def space_change(x):
+    if(x == "\xa0" ):
+        return "None"
+    elif( x == ""):
+         return "None"
+
+
+# In[89]:
+
+
+foc['bean_type'] = foc['bean_type'].apply(space_change)
+foc.head()
+
+
+# In[90]:
+
+
+foc.isnull().sum()
+
+
+# # Data Visual
+
+# In[91]:
+
+
+plt.figure(figsize=(10,7))
+sns.countplot(foc.rating)
+plt.title("Total Chocolate Bars By Rating");
+
+
+# In[92]:
+
+
+def rate_merger(x):
+    if x < 2.0:
+        return 1
+    elif 2.0 <= x < 3.0:
+        return 2
+    elif 3.0 <= x < 3.75:
+        return 3
+    elif 3.75 <= x < 4.0:
+        return 3.75
+    elif 4.0 <= x < 5.0:
+        return 4
+    elif x == 5:
+        return 5
+    else:
+        return "Unknown"
+    
+foc['new_rating']= foc['rating'].apply(rate_merger)
+
+
+# In[93]:
+
+
+def rate_merger(x):
+    if x < 2.0:
+        return "Unpleasant"
+    elif 2.0 <= x < 3.0:
+        return "Disappointing"
+    elif 3.0 <= x < 3.75:
+        return "Satisfactory"
+    elif 3.75 <= x < 4.0:
+        return "Praiseworthy"
+    elif 4.0 <= x < 5.0:
+        return "Premium"
+    elif x == 5:
+        return "Elite"
+    else:
+        return "Unknown"
+    
+foc['rating_status']=foc['rating'].apply(rate_merger)
+
+plt.figure(figsize=(10,7))
+sns.countplot(foc.rating_status)
+plt.title("Cocoa Percentage Patterns Per Year \n")
+plt.title("Toatl Chocolate Bars By Rating Category");
+
+
+# In[94]:
+
+
+fig, ax= plt.subplots(figsize=[16,4])
+sns.distplot(foc['rating'])
+ax.set_title('Rating Distribution')
+plt.show()
+
+
+# In[95]:
+
+
+foc['review_year'] = foc['review_year'].astype(str)
+plt.figure(figsize=(12,6))
+sns.boxplot(x='review_year', y='rating',data=foc)
+
+
+# In[96]:
+
+
+d5 = foc.groupby('review_year').aggregate({'cocoa_percent':'mean'})
+d5 = d5.reset_index()
+sns.set()
+plt.figure(figsize=(15, 4))
+ax = sns.lineplot(x='review_year', y='cocoa_percent', data=d5)
+ax.set(xticks=d5.review_year.values)
+plt.xlabel("\nYear of Review")
+plt.ylabel("Cocoa Percentage ")
+plt.title("Cocoa Percentage Patterns Per Year \n")
+plt.show()
+
+
+# In[97]:
+
+
+d5 = foc.groupby('review_year').aggregate({'rating':'mean'})
+d5 = d5.reset_index()
+sns.set()
+plt.figure(figsize=(15, 4))
+ax = sns.lineplot(x='review_year', y='rating', data=d5)
+ax.set(xticks=d5.review_year.values)
+plt.xlabel("\nYear of Review")
+plt.ylabel("Rating Percentage")
+plt.title("Average Rating Percentage Per Year  \n")
+plt.show()
+
+
+# In[98]:
+
+
+d5 = foc.groupby('company').aggregate({'rating':'mean'})
+d5 = d5.sort_values('rating', ascending = False).head(10)
+d5 = d5.reset_index()
+
+sns.set()
+plt.figure(figsize=(15, 4))
+sns.barplot(x=d5.company, y=d5.rating)
+plt.xticks(rotation=90)
+plt.xlabel("Company Name")
+plt.ylabel("Rating")
+plt.title("Top 10 Company By Rating")
+plt.show()
+
+
+# In[99]:
+
+
+d2 = foc.groupby('company').aggregate({'cocoa_percent':'mean', 'rating':'mean' })
+d2 = d2.sort_values('rating', ascending=False).head(10)
+d2 = d2.reset_index()
+sns.set()
+plt.figure(figsize=(15, 4))
+sns.barplot(x='company', y='cocoa_percent', data=d2)
+plt.xticks(rotation=90)
+plt.xlabel("\nChocolate Company")
+plt.ylabel("Average Cocoa Percentage")
+plt.title("Top 10 Companies by Average Cocoa Percentage Used \n")
+plt.show()
+
+
+# In[100]:
+
+
+sns.lmplot(x ='cocoa_percent',y='rating',fit_reg=False,scatter_kws={"color":"red","alpha":0.3,"s":100},data=foc)
+plt.xlabel('Percentage of Cocoa',size=12,color='darkred')
+plt.ylabel('Rating of the Bar',size=12,color='darkred')
+plt.title("% Cocoa vs Rating")
+plt.show()
+
+
+# In[101]:
+
+
+print ('Top Chocolate Producing Countries in the World\n')
+country=list(foc['company_location'].value_counts().head(10).index)
+choco_bars=list(foc['company_location'].value_counts().head(10))
+prod_ctry=dict(zip(country,choco_bars))
+print(foc['company_location'].value_counts().head())
+
+plt.figure(figsize=(10,5))
+plt.hlines(y=country,xmin=0,xmax=choco_bars,color='red')
+plt.plot(choco_bars,country,"r^")
+plt.xlabel('Country')
+plt.ylabel('Number of chocolate bars')
+plt.title("Top 10 Chocolate Producing Countries")
+plt.show()
+
+
+# In[102]:
+
+
+d0 = foc.groupby('company_location').aggregate({'rating':'mean' })
+d0 = d0.sort_values('rating', ascending=False).head(10)
+d0 = d0.reset_index()
+
+sns.set()
+plt.figure(figsize=(15, 4))
+sns.barplot(x='company_location', y='rating', data=d0)
+plt.xticks(rotation=90)
+plt.xlabel("\nCountry")
+plt.ylabel("Avg Rating")
+plt.title("Top 10 Countries by Rating  \n")
+plt.show()
+
+
+# In[103]:
+
+
+sns.distplot(foc.cocoa_percent)
+plt.xlabel("% of cocoa")
+plt.ylabel("frequency")
+plt.title("Distribution of cocoa percentage");
+
+
+# In[104]:
+
+
+sns.boxplot(x=foc.new_rating, y=foc.cocoa_percent)
+
+
+# In[105]:
+
+
+sns.violinplot(x=foc.new_rating, y=foc.cocoa_percent)
+
